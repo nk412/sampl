@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+import argparse
+import random
+import sys
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='samples piped input data')
+    parser.add_argument('-s', '--size', type=float, help='sample ratio (float)', default=0.1)
+    parser.add_argument('-r', '--random-seed', type=int, help='seed for the RNG')
+    parser.add_argument('-v', '--verbose', action='store_true', default=False, help='show verbose stats')
+    return parser.parse_args(sys.argv[1:])
+
+def main():
+    args =  parse_args()
+    if args.random_seed:
+        random.seed(args.random_seed)
+
+    n_lines = s_lines = 0
+    for line in sys.stdin.readlines():
+        n_lines += 1
+        if random.random() <= args.size:
+            s_lines += 1
+            sys.stdout.write(line)
+
+    if args.verbose:
+        sys.stderr.write("Sample ratio : {}\n".format(args.size))
+        sys.stderr.write("Input lines  : {}\n".format(n_lines))
+        sys.stderr.write("Output lines : {}\n".format(s_lines))
+
+if __name__ == '__main__':
+    main()
